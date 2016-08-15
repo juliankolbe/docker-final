@@ -1,0 +1,44 @@
+version: "2"
+
+services:
+  node:
+    container_name: node-jul-framework-1
+    image: jules241/node-jul-framework-1
+    build:
+      context: .
+      dockerfile: node.dockerfile
+    ports:
+      - "8080:3000"
+    volumes:
+      - .:/usr/src/app
+      - 'node_modules:/usr/src/app/node_modules'
+    working_dir: /usr/src/app
+    #env_file:
+    #  - ./.docker/env/app.development.env
+    links:
+      - postgres
+    environment:
+      - PGHOST=postgres
+      - PGDATABASE=docker-test-1
+      - PGUSER=julian
+      - PGPASSWORD=123456
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: julian
+      POSTGRES_DB: docker-test-1
+    ports:
+      - "5555:5432"
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+
+volumes:
+  postgres:
+    driver: "local"
+  node_modules:
+    driver: "local"
+  #node_app:
+  #  driver: "local"
